@@ -39,7 +39,7 @@ export default function NoteList({ notes, onSelect }: NoteListProps) {
           <p className={css.content}>{note.content}</p>
           <div className={css.footer}>
             <span className={css.tag}>{note.tag}</span>
-            <Link className={css.link} href="/notes">View details</Link>
+            <Link className={css.link} href={`/notes/${note.id}`}>View details</Link>
             <button
               className={`${css.button} ${deleteNoteMutation.isPending ? css.buttonLoading : ""}`}
               onClick={(e) => {
