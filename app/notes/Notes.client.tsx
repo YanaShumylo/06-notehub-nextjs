@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import { useQuery } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
-// import css from "../page.module.css";
 import css from "../../components/NotesPage/NotesPage.module.css";
 import SearchBox from "../../components/SearchBox/SearchBox";
 import Pagination from "../../components/Pagination/Pagination";
