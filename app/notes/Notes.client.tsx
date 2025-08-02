@@ -15,7 +15,11 @@ import { fetchNotes } from "../../lib/api";
 import Loader from "../../app/loading";
 import ErrorMessage from "../../app/notes/error";
 
-export default function App() {
+interface NotesClientProps {
+  initialData: Awaited<ReturnType<typeof fetchNotes>>;
+} 
+
+export default function NotesClient({ initialData }: NotesClientProps) {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,7 +42,8 @@ export default function App() {
       page: currentPage,
       perPage: 12,
     }),
-   placeholderData: (previousData) => previousData,
+    placeholderData: (previousData) => previousData,
+    initialData: currentPage === 1 && debouncedSearch === "" ? initialData : undefined,
 });
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);

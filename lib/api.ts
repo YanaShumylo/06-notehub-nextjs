@@ -2,11 +2,9 @@ import axios from "axios";
 import type { NewNoteData, Note } from "../types/note";
 
 const myKey = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
-
 if (!myKey) {
   throw new Error("NEXT_PUBLIC_NOTEHUB_TOKEN is not defined in .env file");
 }
-
 const myApiKey = `Bearer ${myKey}`;
 
 axios.defaults.baseURL = "https://notehub-public.goit.study/api";
@@ -29,15 +27,18 @@ interface FetchNotesResponse{
  notes: Note[];
   totalPages: number;
 }
-export const fetchNotes = async ({ search, page = 1, perPage = 12 }: FetchNotesParams): Promise<NotesHttpResponse> => {
+export const fetchNotes = async ({
+  search,
+  page = 1,
+  perPage = 12
+}: FetchNotesParams): Promise<NotesHttpResponse> => {
   const response = await axios.get<FetchNotesResponse>('/notes', {
     params: {
       page,
       perPage,
       ...(search?.trim() ? { search } : {}),
-            }
-            }
-        );
+            },
+            });
         
   return {
     page,
@@ -81,4 +82,7 @@ export const deleteNote = async (noteId: string): Promise<Note> => {
 };
     
 
-export const getSingleNote = async (id: string) => { const res = await axios.get<Note>(`/notes/${id}`); return res.data };
+export const getSingleNote = async (id: string): Promise<Note> => {
+  const res = await axios.get<Note>(`/notes/${id}`);
+  return res.data;
+};
