@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { NewNoteData, Note } from "../types/note";
+import { handleApiError } from "./handleApiError";
 
 const myKey = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
 if (!myKey) {
@@ -63,16 +64,8 @@ export const createNote = async (noteData: NewNoteData): Promise<Note> => {
 
     return res.data.note;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const message =
-        error.response?.data?.status_message || error.message;
-      throw new Error(
-        `Failed to create note: ${status ? `(${status})` : ""} ${message}`
-      );
-    } else {
-      throw new Error("An unknown error occurred while creating note.");
-    }
+    handleApiError(error, "create note");
+    throw error;
   }
 };
 
@@ -81,15 +74,8 @@ export const deleteNote = async (noteId: string): Promise<Note> => {
   const response = await axios.delete<{ note: Note }>(`/notes/${noteId}`);
   return response.data.note;
 }catch (error) {
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const message =
-        error.response?.data?.status_message || error.message;
-      throw new Error(
-        `Failed to delete note: ${status ? `(${status})` : ""} ${message}`
-      );
-    }
-    throw new Error("An unknown error occurred while deleting note.");
+    handleApiError(error, "delete note");
+    throw error;
   }
 };
 
@@ -98,14 +84,7 @@ export const fetchNoteById = async (id: string): Promise<Note> => {
   const res = await axios.get<Note>(`/notes/${id}`);
   return res.data;
 } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const message =
-        error.response?.data?.status_message || error.message;
-      throw new Error(
-        `Failed to fetch note: ${status ? `(${status})` : ""} ${message}`
-      );
-    }
-    throw new Error("An unknown error occurred while fetching note.");
+    handleApiError(error, "fetch note");
+    throw error;
   }
 };
