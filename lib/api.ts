@@ -16,14 +16,14 @@ interface FetchNotesParams{
     search?: string;
 }
 
-interface NotesHttpResponse{
+interface NotesResponse{
   data: Note[];
   totalPages: number;
   page: number;
   perPage: number;
 }
 
-interface FetchNotesResponse{
+interface FetchNotesApiResponse{
  notes: Note[];
   totalPages: number;
 }
@@ -31,8 +31,8 @@ export const fetchNotes = async ({
   search,
   page = 1,
   perPage = 12
-}: FetchNotesParams): Promise<NotesHttpResponse> => {
-  const response = await axios.get<FetchNotesResponse>('/notes', {
+}: FetchNotesParams): Promise<NotesResponse> => {
+  const response = await axios.get<FetchNotesApiResponse>('/notes', {
     params: {
       page,
       perPage,
@@ -77,12 +77,35 @@ export const createNote = async (noteData: NewNoteData): Promise<Note> => {
 };
 
 export const deleteNote = async (noteId: string): Promise<Note> => {
+  try {
   const response = await axios.delete<{ note: Note }>(`/notes/${noteId}`);
   return response.data.note;
+}catch (error) {
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const message =
+        error.response?.data?.status_message || error.message;
+      throw new Error(
+        `Failed to delete note: ${status ? `(${status})` : ""} ${message}`
+      );
+    }
+    throw new Error("An unknown error occurred while deleting note.");
+  }
 };
-    
 
-export const getSingleNote = async (id: string): Promise<Note> => {
+export const fetchNoteById = async (id: string): Promise<Note> => {
+  try {
   const res = await axios.get<Note>(`/notes/${id}`);
   return res.data;
+} catch (error) {
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const message =
+        error.response?.data?.status_message || error.message;
+      throw new Error(
+        `Failed to fetch note: ${status ? `(${status})` : ""} ${message}`
+      );
+    }
+    throw new Error("An unknown error occurred while fetching note.");
+  }
 };

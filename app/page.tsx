@@ -17,5 +17,6 @@ export default function HomePage() {
           and productivity.
         </p>
       </div>
-    </main>);
+    </main>
+  );
 };
